@@ -22,6 +22,12 @@ const Sidebar = () => (
   </Link>
 </li>
 
+  <li className="p-4 hover:bg-yellow-700">
+  <Link href="/components/blogs" className="block w-full h-full">
+    Blogs
+  </Link>
+</li>
+
 
     </ul>
   </nav>
