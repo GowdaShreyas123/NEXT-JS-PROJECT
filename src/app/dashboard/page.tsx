@@ -185,7 +185,7 @@ export default function UserListPage() {
               </thead>
               <tbody>
                 {currentUsers.map((user, index) => (
-                  <tr key={user.id} className={`border-b border-gray-100 hover:bg-blue-500 hover:shadow-lg hover:scale-105 transition-all duration-200 ${selectedIds.includes(user.id) ? 'bg-blue-50' : ''}`}>
+                  <tr key={user.id} className={`border-b  border-gray-100 hover:bg-blue-500 hover:shadow-lg hover:scale-105 transition-all duration-200 ${selectedIds.includes(user.id) ? 'bg-blue-50' : ''}`}>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
                         <input

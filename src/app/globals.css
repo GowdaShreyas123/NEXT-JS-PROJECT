@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* globals.css */
+
+.card-3d {
+  @apply hover:shadow-2xl hover:-translate-y-1;
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-3d:hover {
+  transform: rotateX(6deg) rotateY(6deg) scale(1.02);
+}
 
 
 @layer base {
