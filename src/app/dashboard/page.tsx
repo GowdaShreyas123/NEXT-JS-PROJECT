@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Pencil, Plus, Trash, ChevronLeft, ChevronRight } from "lucide-react";
+import { Pencil, Plus, Trash, ChevronLeft, ChevronRight, MoreHorizontal, Search, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface User {
@@ -106,11 +106,11 @@ export default function UserListPage() {
     return pages.map((page) => (
       <button
         key={page}
-        className={`w-8 h-8 flex items-center justify-center text-sm font-medium border ${
+        className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-md ${
           currentPage === page
-            ? "bg-blue-600 text-white border-blue-600"
-            : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-        } rounded`}
+            ? "bg-blue-500 text-white"
+            : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+        }`}
         onClick={() => setCurrentPage(page)}
       >
         {page}
@@ -119,116 +119,157 @@ export default function UserListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-8 text-white">
-      <div className="max-w-7xl mx-auto bg-gray-800 rounded-xl shadow-lg p-8">
-        {/* Top Bar */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">User Management</h1>
-          <div className="flex gap-2">
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-8xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
+          <div className="flex justify-between items-start mb-6">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 mb-1">User</h1>
+              <p className="text-gray-500 text-sm">{users.length} users found</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
+                <RefreshCw size={20} />
+              </button>
+              <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
+                <Search size={20} />
+              </button>
+              <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+            </div>
+          </div>
+
+          {/* Filter tabs */}
+          <div className="flex gap-6 mb-6">
+            <button className="text-blue-500 border-b-2 border-blue-500 pb-2 font-medium">All users</button>
+            <button className="text-gray-500 pb-2 hover:text-gray-700">Edit</button>
+            <button className="text-gray-500 pb-2 hover:text-gray-700">Delete</button>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-2 mb-4">
             <button
-              className="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium"
               onClick={() => {
                 setEditingUser(null);
                 setFormData({ name: "", email: "", address: "" });
                 setShowModal(true);
               }}
             >
-              <Plus size={16} /> Add
+              <Plus size={16} /> Add User
             </button>
             <button
-              className="flex items-center gap-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
+              className={`flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium ${
+                selectedIds.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               onClick={deleteSelected}
               disabled={selectedIds.length === 0}
             >
-              <Trash size={16} /> Delete
+              <Trash size={16} /> Delete Selected
             </button>
           </div>
         </div>
 
-        {/* User Table */}
-        <div className="overflow-x-auto rounded-lg shadow-sm">
-          <table className="w-full table-auto text-sm text-left text-gray-300">
-            <thead className="bg-blue-700 text-white">
-              <tr>
-                <th className="p-3">Select</th>
-                <th className="p-3">Name</th>
-                <th className="p-3">Email</th>
-                <th className="p-3">Address</th>
-                <th className="p-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentUsers.map((user) => (
-                <tr key={user.id} className="border-b border-gray-600 hover:bg-gray-700">
-                  <td className="p-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(user.id)}
-                      onChange={() => toggleSelect(user.id)}
-                    />
-                  </td>
-                  <td className="p-3 font-medium">{user.name}</td>
-                  <td className="p-3">{user.email}</td>
-                  <td className="p-3">{user.address}</td>
-                  <td className="p-3 text-center space-x-2">
-                    <button
-                      className="text-blue-400 hover:text-blue-200"
-                      onClick={() => {
-                        setEditingUser(user);
-                        setFormData({
-                          name: user.name,
-                          email: user.email,
-                          address: user.address,
-                        });
-                        setShowModal(true);
-                      }}
-                    >
-                      <Pencil size={16} />
-                    </button>
-                    <button
-                      className="text-red-400 hover:text-red-200"
-                      onClick={() => deleteUser(user.id)}
-                    >
-                      <Trash size={16} />
-                    </button>
-                  </td>
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-black-500 w-12">ID</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-black-500">Name</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-black-500">Address</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-black-500">Email</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-black-500">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex justify-between items-center mt-6">
-          <div className="text-sm text-gray-400">
-            Showing <span className="font-medium">{indexOfFirstUser + 1}</span> to{" "}
-            <span className="font-medium">{Math.min(indexOfLastUser, users.length)}</span> of{" "}
-            <span className="font-medium">{users.length}</span>
+              </thead>
+              <tbody>
+                {currentUsers.map((user, index) => (
+                  <tr key={user.id} className={`border-b border-gray-100 hover:bg-blue-500 hover:shadow-lg hover:scale-105 transition-all duration-200 ${selectedIds.includes(user.id) ? 'bg-blue-50' : ''}`}>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(user.id)}
+                          onChange={() => toggleSelect(user.id)}
+                          className="rounded border-gray-300 text-blue-500 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-900 font-medium">#{user.id.toString().padStart(3, '0')}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                          {user.name.charAt(0)}
+                        </div>
+                        <span className="text-gray-900 font-medium">{user.name}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-6 text-gray-600">{user.address}</td>
+                    <td className="py-4 px-6 text-gray-600">{user.email}</td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        <button
+                          className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full hover:bg-blue-200"
+                          onClick={() => {
+                            setEditingUser(user);
+                            setFormData({
+                              name: user.name,
+                              email: user.email,
+                              address: user.address,
+                            });
+                            setShowModal(true);
+                          }}
+                        >
+                          <Pencil size={16} className="mr-1" />
+                        </button>
+                        <button
+                           className="inline-flex items-center px-3 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full hover:bg-red-200"
+                          onClick={() => deleteUser(user.id)}
+                        >
+                          <Trash size={16} className="mr-1" />
+                        </button>
+                      </div>
+                    </td>
+                  
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <div className="flex items-center space-x-1">
-            <button
-              className={`w-8 h-8 flex items-center justify-center border ${
-                currentPage === 1
-                  ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                  : "bg-gray-900 text-white hover:bg-gray-700"
-              } rounded`}
-              onClick={goToPreviousPage}
-              disabled={currentPage === 1}
-            >
-              <ChevronLeft size={14} />
-            </button>
-            {renderPaginationNumbers()}
-            <button
-              className={`w-8 h-8 flex items-center justify-center border ${
-                currentPage === totalPages
-                  ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                  : "bg-gray-900 text-white hover:bg-gray-700"
-              } rounded`}
-              onClick={goToNextPage}
-              disabled={currentPage === totalPages}
-            >
-              <ChevronRight size={14} />
-            </button>
+
+          {/* Pagination */}
+          <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200 bg-gray-50">
+            <div className="text-sm text-gray-500">
+              Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, users.length)} of {users.length}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                className={`p-2 rounded-lg ${
+                  currentPage === 1
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:bg-gray-100"
+                }`}
+                onClick={goToPreviousPage}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <div className="flex gap-1">
+                {renderPaginationNumbers()}
+              </div>
+              <button
+                className={`p-2 rounded-lg ${
+                  currentPage === totalPages
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:bg-gray-100"
+                }`}
+                onClick={goToNextPage}
+                disabled={currentPage === totalPages}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -243,41 +284,50 @@ export default function UserListPage() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-gray-900 text-white p-6 rounded-lg shadow-lg max-w-md w-full"
+              className="bg-white p-6 rounded-2xl shadow-xl max-w-md w-full mx-4"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <h2 className="text-xl font-semibold mb-4">
-                {editingUser ? "Edit User" : "Add User"}
+              <h2 className="text-xl font-semibold mb-6 text-gray-900">
+                {editingUser ? "Edit User" : "Add New User"}
               </h2>
               <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full p-2 border rounded bg-gray-800 text-white border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full p-2 border rounded bg-gray-800 text-white border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <input
-                  type="text"
-                  placeholder="Address"
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full p-2 border rounded bg-gray-800 text-white border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter email"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                  <input
+                    type="text"
+                    value={formData.address}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter address"
+                  />
+                </div>
               </div>
-              <div className="mt-6 flex justify-end gap-2">
+              <div className="mt-6 flex justify-end gap-3">
                 <button
-                  className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-700"
+                  className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
                   onClick={() => {
                     setShowModal(false);
                     setEditingUser(null);
@@ -287,10 +337,10 @@ export default function UserListPage() {
                   Cancel
                 </button>
                 <button
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                   onClick={handleModalSubmit}
                 >
-                  {editingUser ? "Update" : "Add"}
+                  {editingUser ? "Update User" : "Add User"}
                 </button>
               </div>
             </motion.div>

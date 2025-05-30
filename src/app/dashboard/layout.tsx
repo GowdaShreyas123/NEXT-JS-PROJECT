@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
  <aside className="relative w-80 bg-blue-600 text-black flex flex-col justify-between overflow-visible">
 <div className="relative z-10">
 <div className="p-8 pb-12">
-<h1 className="text-2xl font-bold tracking-wide">eProduct</h1>
+<h1 className="text-2xl font-bold tracking-wide mt-14">eProduct</h1>
 </div>
 
  <nav className="space-y-1 relative">
@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
  <Link
  href={item.path}
- className="relative flex items-center gap-4 py-3 px-6 w-full z-10"
+ className="relative flex items-center gap-12 mt-12 py-3 px-6 w-full z-10"
  >
  <span className="w-5 h-5 flex items-center justify-center">
  {item.icon()}
