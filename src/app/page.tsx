@@ -8,10 +8,11 @@ import ContactSection from "./components/second";
 export default function Home() {
   return (
     <>
+ 
       <Navbar/>
       <TestimonialCard/>
       <ContactSection/>
-    //say
+
      
     </>
   );

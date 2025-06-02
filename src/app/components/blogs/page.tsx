@@ -199,12 +199,7 @@ const BlogPlatform = () => {
                                     Twitter
                                 </button>
                             </div>
-                            <button
-                                onClick={() => setIsDarkMode(!isDarkMode)}
-                                className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
-                            >
-                                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-                            </button>
+                           
                             <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow duration-200">
                                 <User size={16} className="text-white" />
                             </div>

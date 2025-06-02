@@ -2,7 +2,7 @@ import React from "react";
 
 const Navbar = () => {
   return (
-   <nav className="fixed top-0 left-0 w-full z-50 bg-gray-300 shadow-md h-16 flex items-center relative">
+   <nav className="fixed top-0 left-0 w-full z-50 bg-gray-300 shadow-md h-16 flex items-center ">
   {/* Left aligned */}
   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 font-bold text-lg">
     nicepage
