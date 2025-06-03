@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Search, User, Plus, Heart, MessageCircle, Share2, Sun, Moon } from 'lucide-react';
-
+import { useToggleStore } from '@/app/stores/useToggleStore';
 const BlogPlatform = () => {
     const [posts, setPosts] = useState([
         {
@@ -81,7 +81,12 @@ const BlogPlatform = () => {
     });
     const [activeFilter, setActiveFilter] = useState('ALL');
     const categories = ['ALL', 'TRAVEL', 'MOVIES', 'COOKING', 'WELLNESS', 'FINANCE', 'GARDENING', 'BOOKS'];
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const isDarkMode = useToggleStore((state) => state.isDarkMode);
+const toggleDarkMode = useToggleStore((state) => state.toggleDarkMode);
+  
+
+ 
+
 
     useEffect(() => {
         if (isDarkMode) {
@@ -199,10 +204,12 @@ const BlogPlatform = () => {
                                     Twitter
                                 </button>
                             </div>
-                           
-                            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow duration-200">
-                                <User size={16} className="text-white" />
-                            </div>
+                            <button
+                                onClick={() => toggleDarkMode()}
+                                className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                            >
+                                {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                            </button>
                         </div>
                     </div>
                 </div>

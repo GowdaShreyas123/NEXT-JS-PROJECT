@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../Signin/useAuthStore";
 
-// Define Zod schema for validation
 const signupSchema = z
   .object({
     email: z.string().email("Invalid email address").nonempty("Email is required"),
@@ -47,14 +46,14 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-md p-8">
-        <h2 className="text-center text-2xl font-bold text-gray-900">Sign Up</h2>
+    <div className="min-h-screen flex items-center justify-center bg-black px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md sm:max-w-lg bg-white rounded-xl shadow-md p-6 sm:p-8">
+        <h2 className="text-center text-xl sm:text-2xl font-bold text-gray-900">Sign Up</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6" noValidate>
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm sm:text-base font-medium text-gray-700">
               Email
             </label>
             <input
@@ -62,7 +61,7 @@ const SignupPage: React.FC = () => {
               type="email"
               {...register("email")}
               autoComplete="email"
-              className={`mt-2 block w-full rounded-md border px-3 py-2 sm:text-sm focus:outline-none focus:ring-2 ${
+              className={`mt-2 block w-full rounded-md border px-3 py-2 sm:py-3 sm:text-sm focus:outline-none focus:ring-2 ${
                 errors.email
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300 focus:ring-indigo-500"
@@ -75,7 +74,7 @@ const SignupPage: React.FC = () => {
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm sm:text-base font-medium text-gray-700">
               Password
             </label>
             <input
@@ -83,7 +82,7 @@ const SignupPage: React.FC = () => {
               type="password"
               {...register("password")}
               autoComplete="new-password"
-              className={`mt-2 block w-full rounded-md border px-3 py-2 sm:text-sm focus:outline-none focus:ring-2 ${
+              className={`mt-2 block w-full rounded-md border px-3 py-2 sm:py-3 sm:text-sm focus:outline-none focus:ring-2 ${
                 errors.password
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300 focus:ring-indigo-500"
@@ -96,7 +95,10 @@ const SignupPage: React.FC = () => {
 
           {/* Confirm Password Field */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm sm:text-base font-medium text-gray-700"
+            >
               Confirm Password
             </label>
             <input
@@ -104,7 +106,7 @@ const SignupPage: React.FC = () => {
               type="password"
               {...register("confirmPassword")}
               autoComplete="new-password"
-              className={`mt-2 block w-full rounded-md border px-3 py-2 sm:text-sm focus:outline-none focus:ring-2 ${
+              className={`mt-2 block w-full rounded-md border px-3 py-2 sm:py-3 sm:text-sm focus:outline-none focus:ring-2 ${
                 errors.confirmPassword
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300 focus:ring-indigo-500"
@@ -119,7 +121,7 @@ const SignupPage: React.FC = () => {
           <div className="flex justify-center">
             <button
               type="submit"
-              className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-xl hover:bg-blue-800 transition"
+              className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-xl hover:bg-blue-800 transition text-sm sm:text-base"
             >
               Sign Up
             </button>

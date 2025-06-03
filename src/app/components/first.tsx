@@ -1,33 +1,44 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Menu, X } from 'lucide-react';
+import { useToggleStore } from '@/app/stores/useToggleStore';
 
-const Sidebar = () => (
-  <nav className="fixed top-16 left-0 bg-purple-800 text-white w-64 h-screen z-50">
-    <ul>
-      <li className="p-4 hover:bg-blue-700 rounded-2xl">
-        <Link href="/profile" className="block w-full h-full">
-          Profile
-        </Link>
-      </li>
-      <li className="p-4 hover:bg-blue-700 rounded-2xl">
-        <Link href="/signin" className="block w-full h-full">
-          Signin
-        </Link>
-      </li>
-      <li className="p-4 hover:bg-blue-700 rounded-2xl">
-        <Link href="/dashboard" className="block w-full h-full">
-          Dashboard
-        </Link>
-      </li>
-      <li className="p-4 hover:bg-blue-700 rounded-2xl">
-        <Link href="/components/blogs" className="block w-full h-full">
-          Blogs
-        </Link>
-      </li>
-    </ul>
-  </nav>
+const Sidebar = ({ activePath, closeSidebar }: { activePath: string; closeSidebar: () => void }) => (
+  <aside className="fixed top-16 left-0 h-full w-full sm:w-64 z-50 bg-gradient-to-br from-white/20 to-white/10 dark:from-black/30 dark:to-black/10 backdrop-blur-xl shadow-xl border-r border-white/20 dark:border-white/30 transition-transform duration-300 ease-in-out">
+    <div className="pt-20 px-6 text-black dark:text-white">
+      <button 
+        onClick={closeSidebar}
+        className="absolute top-4 right-4 p-2 rounded-full bg-white/20 dark:bg-black/20 md:hidden"
+      >
+        <X size={24} />
+      </button>
+      
+      <h2 className="text-xl font-bold mb-8 tracking-wider mt-8">Navigation</h2>
+      <ul className="space-y-3">
+        {[
+          { href: '/profile', label: 'Profile' },
+          { href: '/Signin', label: 'Signin' },
+          { href: '/dashboard', label: 'Dashboard' },
+          { href: '/components/blogs', label: 'Blogs' },
+        ].map((item) => (
+          <li key={item.href}>
+            <Link
+              href={item.href}
+              className={`block py-3 px-4 rounded-lg transition-all duration-300 font-medium ${
+                activePath === item.href
+                  ? 'bg-purple-600/90 text-white shadow-md'
+                  : 'hover:bg-purple-500/60 hover:text-white dark:hover:text-white'
+              }`}
+              onClick={closeSidebar}
+            >
+              {item.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </aside>
 );
 
 const testimonials = [
@@ -51,82 +62,112 @@ const testimonials = [
 export default function HomePageWithSidebar() {
   const [index, setIndex] = useState(0);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const isDarkMode = useToggleStore((state) => state.isDarkMode);
+  const toggleDarkMode = useToggleStore((state) => state.toggleDarkMode);
 
   const next = () => setIndex((prev) => (prev + 1) % testimonials.length);
   const prev = () => setIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  const selectTestimonial = (i) => setIndex(i);
+  const selectTestimonial = (i: number) => setIndex(i);
   const toggleSidebar = () => setShowSidebar((prev) => !prev);
-  const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
+  const closeSidebar = () => setShowSidebar(false);
 
   const testimonial = testimonials[index];
 
-  // Automatically hide sidebar on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      if (showSidebar) {
-        setShowSidebar(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [showSidebar]);
-
   return (
-    <div className={`relative min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} p-24`}>
-      {showSidebar && <Sidebar />}
-      <div className={`flex flex-col items-center transition-all duration-300 ${showSidebar ? 'ml-64' : ''}`}>
-        {/* Toggle Sidebar Button */}
-        <div onClick={toggleSidebar} className="flex justify-center mb-4 cursor-pointer">
-          <img src="/logo.jpg" alt="logo" width={50} />
+    <div className={`relative min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} p-4 sm:p-6 md:p-8 lg:p-12 xl:p-24`}>
+      {showSidebar && (
+        <Sidebar 
+          activePath={typeof window !== "undefined" ? window.location.pathname : ""} 
+          closeSidebar={closeSidebar}
+        />
+      )}
+
+      {/* Main content container */}
+      <div className={`${showSidebar ? 'hidden md:block' : 'block'}`}>
+        {/* Mobile header */}
+        <div className="md:hidden flex justify-between items-center mb-6 py-4">
+          <button 
+            onClick={toggleSidebar} 
+            className="p-2 rounded-lg bg-white/20 dark:bg-black/20"
+          >
+            <Menu size={24} />
+          </button>
+          <button 
+            onClick={toggleDarkMode}
+            className="p-2 rounded-lg bg-white/20 dark:bg-black/20"
+          >
+            {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
+          </button>
         </div>
 
-        {/* Dark Mode Toggle */}
-        <div className="flex justify-center mb-4 cursor-pointer" onClick={toggleDarkMode}>
-          {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
-        </div>
-
-        <h2 className="text-6xl font-bold mt-16">Our Clients Say</h2>
-        {/* Testimonial Card */}
-        <div className={`bg-white p-24 mt-16 w-full md:w-1/2 rounded-lg shadow-lg max-w-lg text-center ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-          <div className="flex justify-center mb-8">
-            <div className="p-1 border-4 border-green-500 rounded-full">
-              <img
-                src={testimonial.image}
-                alt={testimonial.name}
-                className="w-40 h-40 rounded-full object-cover"
-              />
+        <div className={`flex flex-col items-center transition-all duration-300 ${showSidebar ? 'md:ml-64' : ''}`}>
+          {/* Desktop Toggle Buttons */}
+          <div className="hidden md:flex flex-col items-center mb-4">
+            <div onClick={toggleSidebar} className="cursor-pointer mb-4">
+              <img src="/logo.jpg" alt="logo" width={50} />
+            </div>
+            <div className="cursor-pointer" onClick={toggleDarkMode}>
+              {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
             </div>
           </div>
-          <p className={`text-gray-600 mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>"{testimonial.quote}"</p>
-          <p className={`font-bold text-lg text-gray-700 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{testimonial.name}</p>
-          {/* Dots */}
-          <div className="flex justify-center mt-6 space-x-2">
-            {testimonials.map((_, i) => (
-              <span
-                key={i}
-                onClick={() => selectTestimonial(i)}
-                className={`w-3 h-3 rounded-full cursor-pointer transition-all duration-200 ${
-                  i === index ? 'bg-purple-500' : 'bg-gray-300'
-                }`}
-              ></span>
-            ))}
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mt-4 sm:mt-8 md:mt-16 text-center">
+            Our Clients Say
+          </h2>
+
+          {/* Testimonial Card */}
+          <div
+            className={`p-6 sm:p-8 mt-8 sm:mt-12 w-full max-w-md rounded-lg shadow-lg transition-colors duration-300 ${
+              isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+            }`}
+            style={{ minHeight: "350px" }}
+          >
+            <div className="flex justify-center mb-6">
+              <div className="p-1 border-4 border-green-500 rounded-full">
+                <img
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  className="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover"
+                />
+              </div>
+            </div>
+            <p className={`mb-4 min-h-[80px] text-sm sm:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              "{testimonial.quote}"
+            </p>
+            <p className={`font-bold text-base sm:text-lg min-h-[24px] ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              {testimonial.name}
+            </p>
+
+            {/* Dots */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {testimonials.map((_, i) => (
+                <span
+                  key={i}
+                  onClick={() => selectTestimonial(i)}
+                  className={`w-3 h-3 rounded-full cursor-pointer transition-all duration-200 ${
+                    i === index ? 'bg-purple-500' : isDarkMode ? 'bg-gray-600' : 'bg-gray-300'
+                  }`}
+                ></span>
+              ))}
+            </div>
           </div>
-        </div>
-        {/* Navigation Buttons */}
-        <div className="flex justify-center mt-6 space-x-4">
-          <button
-            onClick={prev}
-            className="bg-purple-500 text-white w-12 h-12 rounded-md flex items-center justify-center"
-          >
-            &lt;
-          </button>
-          <button
-            onClick={next}
-            className="bg-purple-500 text-white w-12 h-12 rounded-md flex items-center justify-center"
-          >
-            &gt;
-          </button>
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-center mt-6 space-x-4">
+            <button
+              onClick={prev}
+              className="bg-purple-500 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-md flex items-center justify-center"
+            >
+              &lt;
+            </button>
+            <button
+              onClick={next}
+              className="bg-purple-500 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-md flex items-center justify-center"
+            >
+              &gt;
+            </button>
+          </div>
         </div>
       </div>
     </div>
