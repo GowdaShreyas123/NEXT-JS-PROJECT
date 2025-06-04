@@ -59,7 +59,7 @@ const Sidebar = () => {
     ];
     return (
         <aside
-            className={`flex flex-col min-h-screen p-6 transition-all duration-500 ${isDarkMode
+            className={`flex flex-col h-full p-6 transition-all duration-500 ${isDarkMode
                 ? "bg-gray-800 border-r border-gray-700 text-gray-200"
                 : "bg-white border-r border-gray-100 text-gray-800"
                 } shadow-xl`}
@@ -364,8 +364,8 @@ export default function UserListPage() {
             <Toaster />
 
             {/* Sidebar */}
-            <div className={` ${isSidebarOpen ? 'w-80' : 'w-0'} flex-shrink-0 transition-all duration-300 md:flex ${isSidebarOpen ? 'fixed h-screen overflow-y-auto' : 'overflow-hidden'}`}>
-                <Sidebar isDarkMode={isDarkMode} />
+            <div className={`${isSidebarOpen ? ' overflow-y-auto' : 'w-0'} flex-shrink-0 sticky transition-all duration-300 md:flex  ${isSidebarOpen ? ' overflow-y-auto' : 'overflow-hidden'}  `}>
+                <Sidebar isDarkMode={isDarkMode}/>
             </div>
 
             {/* Main Content Area */}
@@ -378,7 +378,7 @@ export default function UserListPage() {
                         }`} style={{ animationDelay: "2s", animationDuration: "6s" }} />
                 </div>
 
-                <div className="relative z-10 p-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-44">
+                <div className="relative z-60 p-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-44">
                     {/* Header */}
                     <div className={`backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-8 border transition-all duration-500 ${isDarkMode
                         ? "bg-gray-800/80 border-gray-700/50 shadow-purple-900/20"
